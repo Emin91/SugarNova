@@ -5,6 +5,8 @@ export const IMAGES = {
 	bg4: require("./bg4.jpg"),
 	bg5: require("./bg5.jpg"),
 	bg6: require("./bg6.jpg"),
+	bg7: require("./bg7.jpg"),
+	gamePlate: require("./gamePlate.png"),
 	img_1: require("./ingredients/img_1.png"),
 	img_2: require("./ingredients/img_2.png"),
 	img_3: require("./ingredients/img_3.png"),

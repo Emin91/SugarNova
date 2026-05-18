@@ -11,7 +11,7 @@ interface IProps extends PropsWithChildren {
 
 export const ScreenBackground: FC<IProps> = ({ edges = ["top", "bottom"], backgroundKey, style, children }) => {
 	return (
-		<ImageBackground style={styles.container} source={backgroundKey ? IMAGES[backgroundKey] : IMAGES.bg}>
+		<ImageBackground style={styles.container} source={backgroundKey ? IMAGES[backgroundKey] : IMAGES.bg1}>
 			<SafeAreaView style={styles.container} edges={edges}>
 				<View style={[styles.container, style]}>{children}</View>
 			</SafeAreaView>

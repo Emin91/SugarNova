@@ -2,8 +2,8 @@ import { FC } from "react";
 import { StyleSheet, Text, TextProps, TextStyle, TouchableOpacity, TouchableOpacityProps, View, ViewStyle } from "react-native";
 import { StyleProp } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { ArrowIcon } from "../assets/svg";
 import { FONTS } from "../assets/fonts";
+import { ArrowIcon } from "../assets/svg";
 
 interface IProps extends TouchableOpacityProps {
 	title?: string;

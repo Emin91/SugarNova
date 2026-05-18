@@ -1,7 +1,6 @@
 import { FC } from "react";
 import { StyleSheet, Text, TextProps, TextStyle, TouchableOpacity, TouchableOpacityProps, ViewStyle } from "react-native";
 import { StyleProp } from "react-native";
-import { FONTS } from "../assets/fonts";
 
 interface IProps extends Omit<TouchableOpacityProps, "style"> {
 	title: string;
@@ -23,17 +22,16 @@ export const MainButton: FC<IProps> = ({ title, buttonStyle, textStyle, textProp
 const styles = StyleSheet.create({
 	container: {
 		width: "100%",
-		height: 54,
-		borderRadius: 10,
+		height: 48,
+		borderRadius: 16,
 		paddingHorizontal: 20,
 		justifyContent: "center",
 		alignItems: "center",
-		backgroundColor: "#B13F03"
+		backgroundColor: "#722BEB"
 	},
 	text: {
-		marginTop: 4,
-		fontSize: 28,
+		fontSize: 26,
 		color: "#FFF",
-		fontFamily: FONTS.bold
+		fontWeight: "800"
 	}
 });

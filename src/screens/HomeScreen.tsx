@@ -14,7 +14,7 @@ export const HomeScreen = memo(() => {
 			<SafeAreaView style={{ flex: 1 }}>
 				<View style={styles.container}>
 					<View style={styles.header}>
-						<TouchableOpacity style={styles.journalButton}>
+						<TouchableOpacity style={styles.journalButton} onPress={() => navigation.navigate("Journal")}>
 							<Text style={styles.journalButtonText}>Journal</Text>
 						</TouchableOpacity>
 						<View style={styles.rightContainer}>

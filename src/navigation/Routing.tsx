@@ -5,6 +5,7 @@ import { createNativeStackNavigator, NativeStackNavigationProp } from "@react-na
 import { WelcomeScreen } from "../screens/WelcomeScreen";
 import { HomeScreen } from "../screens/HomeScreen";
 import { SettingsScreen } from "../screens/SettingsScreen";
+import { JournalScreen } from "../screens/JournalScreen";
 
 enableScreens(true);
 
@@ -12,6 +13,7 @@ export type RootStackParamList = {
 	Welcome: undefined;
 	Home: undefined;
 	Settings: undefined;
+	Journal: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -33,6 +35,7 @@ export const Routing = () => {
 				<Stack.Screen name="Welcome" component={WelcomeScreen} />
 				<Stack.Screen name="Home" component={HomeScreen} />
 				<Stack.Screen name="Settings" component={SettingsScreen} />
+				<Stack.Screen name="Journal" component={JournalScreen} />
 				{/*<Stack.Group screenOptions={transparentModalOptions}>
 					<Stack.Screen name="ConfirmModal" component={ConfirmModalScreen} />
 				</Stack.Group>*/}

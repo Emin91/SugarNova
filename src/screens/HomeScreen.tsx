@@ -4,9 +4,13 @@ import { ScreenBackground } from "../components/ScreenBackground";
 import { PlayIcon, QuestionIcon, SettingsIcon } from "../assets/svg";
 import { hexToRgba } from "../utils/hexToRgba";
 import { useNavigation } from "@react-navigation/native";
+import { useDefaultStore } from "../store/useDefaultStore";
+import { GAME_LEVELS } from "../data/gameLevels";
 
 export const HomeScreen = memo(() => {
 	const navigation = useNavigation<any>();
+	const currentLevelId = useDefaultStore(state => state.currentLevelId);
+	const currentShapeInfo = GAME_LEVELS.find(level => level.id === currentLevelId)?.shapeInfo ?? "";
 
 	return (
 		<ScreenBackground backgroundKey="bg4">
@@ -16,7 +20,7 @@ export const HomeScreen = memo(() => {
 						<Text style={styles.journalButtonText}>Journal</Text>
 					</TouchableOpacity>
 					<View style={styles.rightContainer}>
-						<TouchableOpacity>
+						<TouchableOpacity onPress={() => navigation.navigate("Welcome", { startFromLastStep: true })}>
 							<QuestionIcon />
 						</TouchableOpacity>
 						<TouchableOpacity onPress={() => navigation.navigate("Settings")}>
@@ -26,7 +30,7 @@ export const HomeScreen = memo(() => {
 				</View>
 				<View style={styles.currentTask}>
 					<Text style={styles.currentTaskText}>Current Task:</Text>
-					<Text style={styles.taskText}>Three points aligned in silence.The center carries warmth,while the edges hold it in place.</Text>
+					<Text style={styles.taskText}>{currentShapeInfo}</Text>
 				</View>
 			</View>
 			<TouchableOpacity style={styles.playButton} onPress={() => navigation.navigate("Game")}>

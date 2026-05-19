@@ -7,15 +7,21 @@ import { HomeScreen } from "../screens/HomeScreen";
 import { SettingsScreen } from "../screens/SettingsScreen";
 import { JournalScreen } from "../screens/JournalScreen";
 import { GameScreen } from "../screens/GameScreen";
+import { InformationModalScreen } from "../screens/InformationModalScreen";
+import { MainInfoModalScreen } from "../screens/MainInfoModalScreen";
+import { ConfirmModalScreen } from "../screens/ConfirmModalScreen";
 
 enableScreens(true);
 
 export type RootStackParamList = {
-	Welcome: undefined;
+	Welcome: { startFromLastStep?: boolean } | undefined;
 	Home: undefined;
 	Settings: undefined;
 	Journal: undefined;
 	Game: undefined;
+	InformationModal: undefined;
+	MainInfoModal: undefined;
+	ConfirmModal: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -39,9 +45,11 @@ export const Routing = () => {
 				<Stack.Screen name="Settings" component={SettingsScreen} />
 				<Stack.Screen name="Journal" component={JournalScreen} />
 				<Stack.Screen name="Game" component={GameScreen} />
-				{/*<Stack.Group screenOptions={transparentModalOptions}>
+				<Stack.Group screenOptions={transparentModalOptions}>
+					<Stack.Screen name="InformationModal" component={InformationModalScreen} />
+					<Stack.Screen name="MainInfoModal" component={MainInfoModalScreen} />
 					<Stack.Screen name="ConfirmModal" component={ConfirmModalScreen} />
-				</Stack.Group>*/}
+				</Stack.Group>
 			</Stack.Navigator>
 		</NavigationContainer>
 	);

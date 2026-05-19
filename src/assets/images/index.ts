@@ -9,6 +9,7 @@ export const IMAGES = {
 	gamePlate: require("./gamePlate.png"),
 	hint1: require("./hint1.png"),
 	hint2: require("./hint2.png"),
+	stars: require("./stars.png"),
 	img_1: require("./ingredients/img_1.png"),
 	img_2: require("./ingredients/img_2.png"),
 	img_3: require("./ingredients/img_3.png"),

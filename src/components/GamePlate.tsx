@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
 	View,
 	StyleSheet,
@@ -11,10 +11,11 @@ import {
 
 import { ImageKeys, IMAGES } from "../assets/images";
 import { INGREDIENTS } from "../data/ingredients";
-import { GAME_LEVELS } from "../data/gameLevels";
+import { GAME_LEVELS, GameLevel } from "../data/gameLevels";
+import { useDefaultStore } from "../store/useDefaultStore";
 
 const GRID = Array.from({ length: 5 }, (_, row) =>
-	Array.from({ length: 5 }, (_, col) => ({
+	Array.from({ length: 5 }, (__unused, col) => ({
 		row,
 		col,
 	}))
@@ -26,7 +27,9 @@ type TGamePlateProps = {
 	resetKey: number;
 	isHintActive: boolean;
 	isIngredientHintActive: boolean;
+	levelData: GameLevel
 	onLevelEndedChange?: (isLevelEnded: boolean) => void;
+	onLevelSuccess?: () => void;
 	onTryAgain?: () => void;
 };
 
@@ -34,19 +37,25 @@ export const GamePlate = ({
 	resetKey,
 	isHintActive,
 	isIngredientHintActive,
+	levelData,
 	onLevelEndedChange,
+	onLevelSuccess,
 	onTryAgain,
 }: TGamePlateProps) => {
-	const levelData = GAME_LEVELS[0];
+
 	const [overlayHeight, setOverlayHeight] = useState(0);
 	const [selectedIngredient, setSelectedIngredient] = useState<ImageKeys | null>(null);
 	const [cellStateMap, setCellStateMap] = useState<Record<string, TCellState>>({});
 	const [placedIngredientMap, setPlacedIngredientMap] = useState<Record<string, ImageKeys>>({});
+	const hasTriggeredSuccessRef = useRef(false);
+	const currentLevelId = useDefaultStore((state) => state.currentLevelId);
+	const setCurrentLevelId = useDefaultStore((state) => state.setCurrentLevelId);
 
 	useEffect(() => {
 		setSelectedIngredient(null);
 		setCellStateMap({});
 		setPlacedIngredientMap({});
+		hasTriggeredSuccessRef.current = false;
 	}, [resetKey]);
 
 	const isLevelCompleted = levelData.shape.every(({ row, col, ingredient }) => {
@@ -69,6 +78,23 @@ export const GamePlate = ({
 	useEffect(() => {
 		onLevelEndedChange?.(isLevelEnded);
 	}, [isLevelEnded, onLevelEndedChange]);
+
+	useEffect(() => {
+		if (!isLevelCompleted) {
+			return;
+		}
+		if (hasTriggeredSuccessRef.current) {
+			return;
+		}
+
+		hasTriggeredSuccessRef.current = true;
+		onLevelSuccess?.();
+		const currentIndex = GAME_LEVELS.findIndex((level) => level.id === currentLevelId);
+		const safeCurrentIndex = currentIndex >= 0 ? currentIndex : 0;
+		const nextIndex = (safeCurrentIndex + 1) % GAME_LEVELS.length;
+		const nextLevelId = GAME_LEVELS[nextIndex]?.id ?? GAME_LEVELS[0].id;
+		setCurrentLevelId(nextLevelId);
+	}, [currentLevelId, isLevelCompleted, onLevelSuccess, setCurrentLevelId]);
 
 	const shapeCellKeySet = new Set(
 		levelData.shape.map(({ row, col }) => `${row}-${col}`)
@@ -161,7 +187,7 @@ export const GamePlate = ({
 										{placedIngredientMap[`${cell.row}-${cell.col}`] && (
 											<Image
 												source={IMAGES[placedIngredientMap[`${cell.row}-${cell.col}`]]}
-												style={{ width: "78%", height: "78%" }}
+												style={styles.placedIngredient}
 											/>
 										)}
 									</TouchableOpacity>
@@ -170,10 +196,13 @@ export const GamePlate = ({
 						))}
 					</View>
 				</View>
-				<View style={{ position: "absolute", bottom: '4%', left: 0, right: 0, height: '13%', marginHorizontal: '6%', overflow: "hidden" }} >
+				<View style={styles.ingredientsContainer}>
 					<ScrollView
 						horizontal
-						contentContainerStyle={{ alignItems: 'center', gap: 10, opacity: isLevelEnded ? 0.1 : 1 }}
+						contentContainerStyle={[
+							styles.ingredientsContent,
+							isLevelEnded && styles.ingredientsContentEnded,
+						]}
 						showsHorizontalScrollIndicator={false}
 						scrollEnabled={!isLevelEnded}
 					>
@@ -187,25 +216,23 @@ export const GamePlate = ({
 							>
 								<Image
 									source={IMAGES[`img_${ingredient.id}` as ImageKeys]}
-									style={{
-										aspectRatio: 1,
-										height: "80%",
-										opacity:
-											selectedIngredient === `img_${ingredient.id}`
-												? 1
-												: isIngredientHintActive &&
-													!shapeIngredientKeySet.has(`img_${ingredient.id}` as ImageKeys)
-													? 0.1
-													: 0.5,
-									}}
+									style={[
+										styles.ingredientImage,
+										selectedIngredient === `img_${ingredient.id}`
+											? styles.ingredientSelected
+											: isIngredientHintActive &&
+												!shapeIngredientKeySet.has(`img_${ingredient.id}` as ImageKeys)
+												? styles.ingredientHintInactive
+												: styles.ingredientDefault,
+									]}
 								/>
 							</TouchableOpacity>
 						))}
 					</ScrollView>
 					{isLevelEnded && (
-						<View style={{ alignItems: 'center', backgroundColor: "rgba(0,0,0,0.5)", borderRadius: 10, position: "absolute", left: 0, right: 0, top: 0, bottom: 0, justifyContent: "center", }}>
+						<View style={styles.levelEndedOverlay}>
 							{isLevelCompleted ? (
-								<Text style={{ color: 'white', fontSize: 40, fontWeight: '800' }}>
+								<Text style={styles.levelEndedText}>
 									Amazing!
 								</Text>
 							) : (
@@ -214,7 +241,7 @@ export const GamePlate = ({
 										onTryAgain?.();
 									}}
 								>
-									<Text style={{ color: 'white', fontSize: 40, fontWeight: '800' }}>
+									<Text style={styles.levelEndedText}>
 										Try again!
 									</Text>
 								</TouchableOpacity>
@@ -280,5 +307,55 @@ export const styles = StyleSheet.create({
 	},
 	cellAllCorrect: {
 		backgroundColor: "#FFD900",
+	},
+	placedIngredient: {
+		width: "78%",
+		height: "78%",
+	},
+	ingredientsContainer: {
+		position: "absolute",
+		bottom: "4%",
+		left: 0,
+		right: 0,
+		height: "13%",
+		marginHorizontal: "6%",
+		overflow: "hidden",
+	},
+	ingredientsContent: {
+		alignItems: "center",
+		gap: 10,
+		opacity: 1,
+	},
+	ingredientsContentEnded: {
+		opacity: 0.1,
+	},
+	ingredientImage: {
+		aspectRatio: 1,
+		height: "80%",
+	},
+	ingredientSelected: {
+		opacity: 1,
+	},
+	ingredientHintInactive: {
+		opacity: 0.1,
+	},
+	ingredientDefault: {
+		opacity: 0.5,
+	},
+	levelEndedOverlay: {
+		alignItems: "center",
+		backgroundColor: "rgba(0,0,0,0.5)",
+		borderRadius: 10,
+		position: "absolute",
+		left: 0,
+		right: 0,
+		top: 0,
+		bottom: 0,
+		justifyContent: "center",
+	},
+	levelEndedText: {
+		color: "white",
+		fontSize: 40,
+		fontWeight: "800",
 	},
 });

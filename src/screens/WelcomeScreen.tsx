@@ -1,12 +1,13 @@
-import { memo, useState } from "react";
+import { memo, useMemo, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { ScreenBackground } from "../components/ScreenBackground";
 import { hexToRgba } from "../utils/hexToRgba";
+import { RootStackParamList } from "../navigation/Routing";
 
 export const WelcomeScreen = memo(() => {
 	const navigation = useNavigation<any>();
-	const [activeStep, setActiveStep] = useState(0);
+	const route = useRoute<RouteProp<RootStackParamList, "Welcome">>();
 
 	const data = [
 		{
@@ -27,6 +28,16 @@ export const WelcomeScreen = memo(() => {
 		}
 	];
 
+	const initialActiveStep = useMemo(() => {
+		if (route.params?.startFromLastStep) {
+			return data.length - 1;
+		}
+
+		return 0;
+	}, [data.length, route.params?.startFromLastStep]);
+
+	const [activeStep, setActiveStep] = useState(initialActiveStep);
+
 	const handleContinue = () => {
 		if (activeStep === data.length - 1) {
 			navigation.navigate("Home");
@@ -36,7 +47,7 @@ export const WelcomeScreen = memo(() => {
 		setActiveStep(prev => prev + 1);
 	};
 
-	const activeData = data[activeStep]
+	const activeData = data[activeStep];
 
 	return (
 		<ScreenBackground backgroundKey={activeData?.id === 2 || activeData?.id === 3 ? 'bg2' : activeData?.id === 4 ? 'bg3' : 'bg1'}>

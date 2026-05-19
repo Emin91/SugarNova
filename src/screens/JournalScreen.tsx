@@ -8,11 +8,16 @@ import { IngredientItem } from "../components/IngredientItem";
 
 import { hexToRgba } from "../utils/hexToRgba";
 
-import { Recipe, RECIPES } from "../data/recipes";
+import { Recipe } from "../data/recipes";
 import { Ingredient, INGREDIENTS } from "../data/ingredients";
+import { useDefaultStore } from "../store/useDefaultStore";
+import { LogItem } from "../components/LogItem";
+import { GameLevel } from "../data/gameLevels";
 
 export const JournalScreen = memo(() => {
 	const [selectedTab, setSelectedTab] = useState(0);
+	const recipes = useDefaultStore(state => state.recipes);
+	const storyLogs = useDefaultStore(state => state.storyLogs);
 
 	const tabs = [
 		{
@@ -21,7 +26,7 @@ export const JournalScreen = memo(() => {
 		},
 		{
 			id: 2,
-			label: "Story Log"
+			label: "Recipes"
 		},
 		{
 			id: 3,
@@ -60,15 +65,16 @@ export const JournalScreen = memo(() => {
 			</View>
 			<FlatList
 				showsVerticalScrollIndicator={false}
-				data={selectedTab === 0 ? [] : selectedTab === 1 ? RECIPES : INGREDIENTS}
-				renderItem={({ item }) =>
-					selectedTab === 0 ? null : selectedTab === 1 ? (
+				data={selectedTab === 0 ? storyLogs : selectedTab === 1 ? recipes : INGREDIENTS}
+				renderItem={({ item }: { item: GameLevel | Recipe | Ingredient }) =>
+					selectedTab === 0 ? <LogItem item={item as GameLevel} /> : selectedTab === 1 ? (
 						<RecipeItem item={item as Recipe} />
 					) : (
 						<IngredientItem item={item as Ingredient} />
 					)
 				}
 				contentContainerStyle={styles.listContent}
+				ListEmptyComponent={<Text style={styles.emptyText}>No items found</Text>}
 			/>
 		</ScreenBackground>
 	);
@@ -83,6 +89,13 @@ const styles = StyleSheet.create({
 	tabs: {
 		flexDirection: "row",
 		gap: 8
+	},
+	emptyText: {
+		color: "#fff",
+		fontSize: 20,
+		marginTop: 20,
+		textAlign: "center",
+		fontWeight: "900"
 	},
 	tab: {
 		flex: 1,

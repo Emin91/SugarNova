@@ -73,7 +73,7 @@ export const SettingsScreen = memo(() => {
 			))}
 			<MainButton title="Clear Cache" onPress={onClear} />
 			<MainButton title="Reset App" onPress={onReset} buttonStyle={{ backgroundColor: "#FF00FB" }} />
-			<TouchableOpacity>
+			<TouchableOpacity onPress={() => navigation.navigate("Privacy")}>
 				<Text style={styles.privacyPolicyText}>Privacy Policy</Text>
 			</TouchableOpacity>
 		</ScreenBackground>

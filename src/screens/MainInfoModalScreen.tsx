@@ -40,7 +40,6 @@ export const MainInfoModalScreen = memo(() => {
 					/>
 				</View>
 			) : null}
-
 			<View style={styles.content}>
 				<View style={styles.clueContainer}>
 					{isTaskInfoShown || isSuccess ? (
@@ -48,7 +47,6 @@ export const MainInfoModalScreen = memo(() => {
 							{isSuccess ? "Success!" : "Current Task:"}
 						</Text>
 					) : null}
-
 					<Text
 						style={[
 							styles.clueText,
@@ -65,7 +63,6 @@ export const MainInfoModalScreen = memo(() => {
 					</Text>
 				</View>
 			</View>
-
 			<TouchableOpacity style={styles.button} onPress={onTapToStart}>
 				<Text style={styles.buttonText}>
 					{isSuccess ? "TAP TO CONTINUE" : "TAP TO START"}

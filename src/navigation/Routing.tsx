@@ -10,6 +10,7 @@ import { GameScreen } from "../screens/GameScreen";
 import { InformationModalScreen } from "../screens/InformationModalScreen";
 import { MainInfoModalScreen } from "../screens/MainInfoModalScreen";
 import { ConfirmModalScreen } from "../screens/ConfirmModalScreen";
+import { PrivacyScreen } from "../screens/PrivacyScreen";
 
 enableScreens(true);
 
@@ -22,6 +23,7 @@ export type RootStackParamList = {
 	InformationModal: undefined;
 	MainInfoModal: undefined;
 	ConfirmModal: undefined;
+	Privacy: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -45,6 +47,7 @@ export const Routing = () => {
 				<Stack.Screen name="Settings" component={SettingsScreen} />
 				<Stack.Screen name="Journal" component={JournalScreen} />
 				<Stack.Screen name="Game" component={GameScreen} />
+				<Stack.Screen name="Privacy" component={PrivacyScreen} />
 				<Stack.Group screenOptions={transparentModalOptions}>
 					<Stack.Screen name="InformationModal" component={InformationModalScreen} />
 					<Stack.Screen name="MainInfoModal" component={MainInfoModalScreen} />
